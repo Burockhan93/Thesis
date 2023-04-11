@@ -1,0 +1,81 @@
+- Original mesh is based on SMPLX blendshapes set on 0. Need a way to update this so that mesh collider always has the correct mesh.
+- Need a way to seperate body parts so that mesh deformations look more natural. Head shouldnt deform, chest could deform but not as much as butt 
+- Suit provides calculated locations of joints as well, lets see if we could increase the precision using that information. 
+- Try to find which vertices are affected by a collision/ interaction
+- Create a line skeleton to create a simple avatar, find the angles between joints
+- Scene got too large, ask how to reduce it?
+-suit for men, use man body model, 
+- first with original man character, then with deformed body.
+-mesh deformation fps problem,
+- lfs for scene push
+- skletal strture, esh deform bunlar öncelik- collision sonra bu
+-yapamadiklarini da not et
+
+-teslaTeam sorular:
+1) suit man -woman -man
+2) chest yerde- upperspine la degstrmisler ama imkansiz avatar müsade etmio
+3) left right collar bones üst üste- adamalr bunun ok oldugunu düsünüo.
+
+simdi yapilacaklar:
+1- scriptable objectte bulunan IPoseRotation kismini detaylica arastrcaz. bunlar suitten gelen rotation ile carpilip güncel rotasyonu verio avatara.
+bu bence hatali. bu degerler her model icin degstrlmeli ve genel bir degeri olmamali.
+2- collar bones arasinda mesafe olmali bu mesafe yok sayilmis bunu eklmenin bir yolunu bulacaz.Ayrica chest piece icin virtual bir deger vermemiz gerekebilir
+3-  en önemlisi, suitin sensorlerindeki rotasyon degisimi sadece suitin body modeli icin uyumlu gibi.
+yani elbowda bir degisim olunca ortaya cikan aci suitin modleinde evet gercekten dogru bir sekilde represent edilio
+ama acisal farklar smplx e uymuyor. arasinda bir corelation bulmaya calscaz.
+4- the working priciple is as follows, a character is placed on the scene presumably stays in t position.
+thats why avatar settings scriptable object has a reference called ArmsTtoIPose = 83. this is an average
+ value of change of angle when someone lets his arms down from Tpose.
+
+5- This obviously wouldnt work for everyone. For this reason, this value is bound to change. 
+When the avatar added to the scriptableobject and automap button clicked, 
+IPoserotation values are added based on 83 value. really an average value thats needs to be changed
+
+6- 3 hafta for coding skeletal structure, 1_ 83 derece (yani burda aslinda dogrudan aciyi 1 yapip t-pose la baslayablrz) 2-IPOSE degiscek(dof), 3_ chest piece virtuel , 4_ clavier bones 5_ mesh deformation 
+7 2 hafta for evalitioon with menschen_ iste visuel iyi mi onu sor. bi de 
+8. evaluation icin visual wahrnehming, 
+
+-teslaTeam sorular:
+1) drfit videosunu atip sor, buna yeni video eklendi elbow correction
+
+-evaluation icin, 10 drece olayi problemi bunu herkesle dene.(hem probanda sor hem de datayi kaydedip grafik yap)- elle omuza dokunma hareketi
+- ikincisinde su büyük drift olayi iki el araasi mesafeyi ölc accurate olmadigini göster
+
+her asamda sor: hangisi daha iyi görünüo. 
+
+-eval icin 83 derece ile dene 86 derece ile dene- bilekten elbowa ve bilekten bilege iki cizgi cek. 83 ve 86 ile ayri ayri sor nasil oluo.
+-teslaya sor TPose mümkün mü.
+-teslaya sor sensorden veri gelmio diye.
+-schulter kopf dokunucak farka bak kafaya ne kadr yakin diye. kafadaki noktaya ne kadr yakin ona bak.
+- mesh defdomration subjectibe wahrnehmung
+
+google form hazirla. customer satisfdactory gibi. 
+
+process:
+
+önce boy kilo falan sor sonra normal hareket et ekrana bak de
+
+1.are movements ok?
+
+2- kalibrasyon yap. alkisla. sag omza dokun sol omza dokun. alkisla. soru appalus iyi miydi? 
+3- kalibrasyon. kolu sola ac. saga sola döndr döndr döndr o pozosyonda tut bekle. 
+
+4- 83 degree. kalibrasyon t pose a gec.    soru- hangisinde t pose daha iyidi sence
+alkisla - mesafe ölc
+
+86 ile ölc t pose a gec. (burda ölcüoz linelarin paralleligi.)
+alkisla - mesafe ölc
+
+5- continue with 86, this time laxity of shoulder joints. kalibration. t pose then arms are even higher. which one was better
+touch your head, with correction - without correction measure the distance between hand and head. Which one was better
+
+6- continue with 86, pose correction, and elbow rotation. kalibrate - tpose . rotate the arms in t pose. on /off. measure the distance elbow travels. (it shouldnt travel much)
+ then from this position bring the arms back to applaus position. (On /Off) measure the distance again
+
+7- do the IPose, TPose, Applaus, Head Touch, Applaus, with and without corrections
+83 degree- no rotation and position correction
+86 degree - elbow rotation and shoulder movement
+
+ . ask the subject which one were better?
+
+8- A scene for mesh deformation

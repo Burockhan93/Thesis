@@ -1,0 +1,61 @@
+Vorname, Name			:
+Age				:
+Weight				:
+Height				:
+
+1. isRepresentative		:
+
+2. isDriftFirst			:
+
+ LeftElbowDegreeNoDrift 	:
+ RightElbowDegreeNoDrift 	:
+ WristDistanceNoDrift		:
+ LeftElbowDegreeDrift		:
+ RightElbowDegreeDrift		:
+ WristDistanceDrift		:
+
+3. isDriftSecond		:
+
+ LeftElbowDegreeNoBigDrift	:
+ RightElbowDegreeNoBigDrift	:
+ WristDistanceNoBigDrift	:
+ LeftElbowDegreeBigDrift	:
+ RightElbowDegreeBigDrift	:
+ WristDistanceBigDrift		:
+
+4. isDegreeImportant 		:
+
+ LeftShoulderElbowAngle83	:
+ RightShoulderElbowAngle83	:
+ LeftArmAngle83			:
+ RightArmAngle83		:
+ WristDistance83		:
+ BestDegree 			:
+ LeftShoulderElbowAngle8x	:
+ RightShoulderElbowAngle8x	:
+ LeftArmAngle8x			:
+ RightArmAngle8x		:
+
+5. isMovingShoulderBetter 	:
+
+ DistanceWithout		:
+ DistanceWith			:
+
+6. isArmRotatingBetter		:
+
+ LeftElbowDegreeWithout		:
+ RightElbowDegreeWithout	:
+ ApplaudWithout			:
+ LeftelbowDegreeWith		:
+ RightElbowDegreeWith		:
+ ApplaudWith			:
+
+7. isBetter			:
+
+ ImprovementScore 0-10		:
+
+8. isBetter			:
+
+ Opinion			:
+
+

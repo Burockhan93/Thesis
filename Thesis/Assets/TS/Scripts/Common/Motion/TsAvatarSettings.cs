@@ -139,6 +139,10 @@ public class TsAvatarSettings : ScriptableObject
         var rightTPoseToIPose = Quaternion.Euler(0, 0, -m_armsTPoseToIPoseDegrees);
         var leftTPoseToIPose = Quaternion.Euler(0, 0, m_armsTPoseToIPoseDegrees);
 
+        var leftcollar = Quaternion.Euler(0, -10, -10);
+        var rightcollar = Quaternion.Euler(0, 10, 10);
+
+
         switch (boneIndex)
         {
             case TsHumanBoneIndex.RightUpperArm:
@@ -148,12 +152,24 @@ public class TsAvatarSettings : ScriptableObject
                     quaternion = rightTPoseToIPose * quaternion;
                     break;
                 }
+            //Test
+            case TsHumanBoneIndex.RightShoulder:
+                {
+                    quaternion = rightcollar * quaternion;
+                    break;
+                }
 
             case TsHumanBoneIndex.LeftUpperArm:
             case TsHumanBoneIndex.LeftLowerArm:
             case TsHumanBoneIndex.LeftHand:
                 {
                     quaternion = leftTPoseToIPose * quaternion;
+                    break;
+                }
+            //test
+            case TsHumanBoneIndex.LeftShoulder:
+                {
+                    quaternion = leftcollar * quaternion;
                     break;
                 }
         }

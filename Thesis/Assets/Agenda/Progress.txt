@@ -1,0 +1,274 @@
+1- An empty Unity Project has been created
+
+2- TeslaSuit API has been downloaded and imported
+https://developer.teslasuit.io/file/unity-3d-plugin/
+requires log in
+
+-Jumping Function of Suit has been disabled due to inaccuracies
+Please go to ProgramData/Teslasuit/teslasuit_api.config.xml
+Set true in the following line: <without_jumps type="bool">true</without_jumps>
+
+3- SMPL-X Body Model has been downloaded and imported 
+https://smpl-x.is.tue.mpg.de/
+requires log in
+
+4- Newtonsoft.Json has been downloaded from asste store-for future serialisation work if needed
+https://assetstore.unity.com/packages/tools/input-management/json-net-for-unity-11347
+free
+
+5- GitHub repository has been created.
+https://github.com/Burockhan93/Thesis
+
+6- Since we don't git the actual project, but the folder that contains the entire project, gitignore must be corrected.
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+If every line begins with a slash, unity can't find the ignored files and try to push everything in the library. That creates a problem.+
+
+7- Git LFS has been installed. It automatically tracks fbx and json files. So no need to add another thing
+https://git-lfs.com/
+
+8- Entire projects has been uploaded to git.
+
+9- Tesla Mocap requires an AvatarSetting.
+Right Click > Create > Tesla Suit > Motion> Avatar Setting
+
+10- To Create the avatar itself, smplx-female model has been choosen. It has 506 blend shapes, expresseions and hand movement(optional)
+smplx-female has been copied and renamed to SmplWoman. click > Rig(inspector)>Animation Type to humanoid> Create from this model> Apply. It creates an avatar with the same name.
+
+11- AvatarSetting > Avatar >SmplWoman,  click automap.
+
+12- An empty Scene has been created
+
+13- Followings have been added to the scene.
+
+Smplx-female
+-SMPLX Script
+-TsHumanAnimator Script
+Suit
+-TsSuitBehaviourScript
+-TsLiveMotionProvider Script
+Tsmanager
+-TsManagerScript
+
+14- To work with meshes, mesh reading must be made available.
+Click on SmplWoman> Model(inspector)> Read Write Enabled =true
+
+15- Apperantly the suit provides accurate data for male bodies. The suits are not unisex, which makes a lot of sense. The female model has been changed with a male one. Every step until this point has been redone.
+
+16- TeslaSUit API provides the following Joints
+	Hips,
+        LeftUpperLeg,
+        RightUpperLeg,
+        LeftLowerLeg,
+        RightLowerLeg,
+        LeftFoot,
+        RightFoot,
+        Spine,
+        Chest,
+        UpperSpine,
+        Neck,
+        Head,
+        LeftShoulder,
+        RightShoulder,
+        LeftUpperArm,
+        RightUpperArm,
+        LeftLowerArm,
+        RightLowerArm,
+        LeftHand,
+        RightHand,
+	plus hands but we do not focus on them, total of 20
+
+but the suit itself provides 18 joints -> Neck and Head joints are missing.
+
+SMPLX Body model additionally doesnt have upper spine joint. This has been manually added. SMPLMan Avatarsetting > add Spine3 as upperspine. However this causes a constant swaying in body.
+
+17- TestTs Script has been added to determine joint differences between male and female bodies. Funny enough female body manages to yield better results. This scripts visualizes the suits joints as a chained model as well
+TsHumanANimatorScripts has been modified to visualize body model's joints as a chained model.
+
+18- A big different has been observed by the chest joint. Upon further looking into, chest joint wasnt giving correct information. It always reads (0,0,0). It is maybe a sensor error, or an API error. It must be further investigated
+
+19- Upon further investigation, 
+
+ void Update()
+    {
+        skeleton = m_motionProvider.GetSkeleton(Time.time);
+    }
+
+void FooBar(){
+ foreach(TsHumanBoneIndex i in TsHumanBones.SuitBones)
+        {
+            TsTransform boneTransform;
+
+        
+        if (skeleton !=null && skeleton.GetBoneTransform(i,out boneTransform) )
+            {
+               
+	       Debug.Log(boneTransform.rotation + " "+ (int)i);
+               Debug.Log(boneTransform.position + " "+ (int)i);
+            }
+        }
+}
+ boneindex 12 and 13 are giving the same positions, but not the same rotation , 8 is reading 0,0,0 on both
+
+-this will be continued, once asked to tesla team
+
+20) Continuing with mesh deformation
+
+Mesh Deformer Script has been added to the ganeobject with skinned mesh renderer. Tags have been added as MeshFIlter and SkinnedMesh so that Mesh Deformer work with both
+Mesh Deformer deforms the mesh based on an input from camera for now.
+
+21- That's why MeshDeformInput script has been added to mainCamera. It sends a ray to scene, if collides with a meshDeformer script then invokes meshdeformation method
+
+22- Because Collision needs Colliders, Mesh Collider has been added to the body model.
+
+23- mesh Deformation script is responsible for detcting the hit vertice, create an area of effect, determining the indexes of all vertices in the effected area, finding the direction in which the deformation should occur and deformation itself
+
+24- Additionally, it visualizes the effected vertices  
+
+25- In order to make collision based on collisions collidableobject script and collidableobjectsetting script have been added. the later is scripatble object and determines the values such as impact depth, radius etc.
+
+26-  collision detection is based on unitys own collision system. Edit -> Project Settings -> Physics > Default Solver Iterations increasing this or setting CollisionDetectionMode in attached rigidbody to continus dynmaic improves detection precision but costs fps
+
+27-  CollidableObject does basically the same as input from camera. This time, instead of using raycast we use the collision data.
+
+19- Continued-> After a talk with TeslaSuit team, they have confirmed that indeed chest is replaced by upperspines and shoulderbones are located in the middle at the same place! They are indeed clavier bones, which otherwise should have a distance between them.
+
+28- They have further suggested that the positions arent that important because skeletal structure relies on rotations, which is not true because as we all know forward kinematics doent only consider the rotation matrix but also the positions.
+
+29- In an updcoming update they are going to introduce bionical joints, which might help. But there is no time for this now.
+
+30- In order to solve this problem manually, couple of things must be done. The plan is to find correlation between angles of body and suits skeletal structure and assign the best values for rotation- this means we wont be relying on the data coming from the suit alone
+
+31- To this end, we firt need to create vectorial structures of skeletal body model. hips to left upper leg then hips to right upper leg, then to lowerlegs and so on.
+
+32- JoinrRotationIndex has been added to keep tabs on the vectors. It contains a list of enums. Because the suit doesnt consider chest, we create a vector directly from spine to upperspine.
+
+33- Another thing that has been added is JointRotationCalculator. This class contains the necessary info to create these vectors and calculate the angles between them. A dictionary in this class updated regularly to hold most current rotational data.
+
+34- This implementation has given us true results- experiment with left knee has given us true angle values.
+
+35- Continuing on true rotation problem...TsHumanAnimator script  sets up in start method the avatar of gameobject in accordance with the suit. Then updates it in every update call. Suit_Body_gameobject text file has been created to show that the m_bonetransforms values match the actual joint locations present in the scene. This is accepted, as m_noneTransforms will be initalised with the values of these joints.(TsHumanAnimator->SetupAvatarBones()) 
+
+36- Another experiment has been carried out to see the effect of this missing chest piece. Rotation data both from the suit and the body model itself has been recorded just after a calibration process.
+
+35- The results show the effect of missing piece clearly. Until the chest piece comes in the calculation all values are the same, then it starts to change slowly. In order to consider this into calculation, a virtual chest piece has been added. Unfortunaletly the sensor that should give us aditional rotation data is not functioning. so i havet tried to use the rotation from spine and interpolate  avlue for chest but that didnt have much effect. the idea has been scrapted.
+
+36- The same experiment has been done without considering the chest. The results are more or less the same. The reason is unknown will be looked into (maybe setup procedure is wrong). 
+
+37- Over a long period of experimenting, conclusion is-> after a calibration, all internal quaternions of suit are indeed null. But collar bones 12-13. bones sometimes yield rotations deviating from zero. made screenshot of it.
+
+38- Firstly several attempts have been made to improve rotations from 12. & 13. bones. The way they work have been found out to be pretty simple. On IPose,  values of 12: -x,-y,z,w  13: x,-y,-z,w. w. They are opposite of each other.
+
+39- Quaternions have been studied
+
+40- An apperant drift issue has been recorded und will be asked to tesla team
+
+41- In order to see the effects of 12 & 13 bones another setup has been implemented. This time small box gameobjects have been added to left and right collar, shoulder(upperarm), elbow(lower arm) and wrists(hands). 
+
+42- Then sensors on the suit have been moved to determine which sensor effects which joints. The results are peculiar. See the video on sensors
+
+Shortly:
+
+hand_sensor: rotates the hand and half rotates elbow
+wrist_sensor: rotates the elbow, this effects the position of hand
+shoulder_sensor : rotates the shoulder, moves the elbow and hand
+upper_back : does nothing
+lower_back : probably pelvis, effects every other joint. 
+
+43- After that first experiment has been done. I have paused the scene and rotated the collar bones. changing the z value of euler angles have a deep effect of how the arms are shaped. Later more tests will be done to showcase which values are desired.
+
+44- In order to find out how different the behaviour of collar bones are, another setup has been added to TSTest script. From the inspector it is possible to record the rotations of collar bones and put a mark on the frame where drift appears.
+
+45- Indeed collar bones rotations differ when there is a drift. However, visual tests have shown that elbow joints also twist the arm in an unwanted way. See the video
+
+46- Probably one of the main problem in all, is the assumption that 83 degrees between T and Ipose is a constant value for all joints.
+
+47- Another one would be the immobility of some joints. Collar bones are there but their movement is not being captured by the suit in a well manner. Inverse Kinematics is also neglected in the suit which causes these kinds of drift over time. What happens is, when the arm is moved suit captures the rotations of wrist elbow and shoulder. But it is
+
+48- Approaches being tried
+
+- Collar bones werent being considered to have a difference at t and i pose.  However this is wrong. They have a slight impact at "the end position of shoulders". TsAvatarSettings have been modified to give them a slight change for T and I Pose, this has a slightly possitive effect at the end position of shoulders. 
+- Upperspine is being completely ignored. A virtual joint has been added to the avatarsettings of smplman. An average value will be calculated for this joint. It is expected to have a slight effect.
+- Local positions of joints are not being updated. But due to differences between suit and smplx body structure, some joints of smplx shouldnt stay fixated.  Especially shoulders should be able to move freely as rotations from collar bones have an impact on them.
+- In order to see the effect of collar bone rotations to the shoulder bones(actually shoulder to upper arms) another method has been added to JointAngleCalculator. It is shown that degree between collar and shoulder is fixated between 100-130 degrees, when arms make an upward movement
+- And after 120 degree and above shoulder start to look dismorphed. So another model has been added to reposition the shoulder joints based on the rotation of collar bones so that shoulders will be able to move freely in a local space just like humans do.
+- Same has been done for strecthing backwards and forwards as well. Just like before the angles between joints have been calculated. It seems on I Pose the initial values are 65 degrees for both arms they could go up to 120 degrees if stretch back enough.
+
+
+49- To this end, another script has been added, which holds the inital local joint positions of the suit body. this will be used later to change joint locations of body if necessary.
+
+50- Suit joint locations however are somewaht problematic. Suit accepts a point between the feets as origin. BAsed on this origin it gives not the local but world positions to the user. it seems like they are local but they are not , as you move joint locations change positions as well.
+
+51- combining both degrees horizontal and vertical we are gonna adjust shoulder joints so that we could prevent dismorphation. 
+
+52- Another script has been added to hold the initial joint locations of the body. This script can also recalculate the joints based on the given angles. In TSHumanANimator we added a button  called - correct. if pressed _jointlocationUpdater script will be called to update shoulder locations(not rotations).
+
+53- JointLocationUpdater has a method called Updateshoulders. it takes a TsHumanboneIndex(left or right upper arm) and two float values representing the angles between collar-shoulder-elbow triangle(for horizontal movement,c hnages in x-z values) and spine-collar-shoulder triangle (vertical movement- changes in y value). It uses joint rotation calculator script.
+
+54- another problem is in the elbows they rotate more than necessary. In order to prevent that their rotastions will be handled differently. On a small note, rotation hand(wrist) sensor also rotates the elbow a bit on x axis. Elbow cant rotate around z axis naturally. So that lefts us with y axis where we try and find the best rotation for the elbow.
+
+55- An issue is also identified see the video: elbow rotation correction.
+
+55- Couple of buttons have been added to the scene GUI because it is more convenient to press them on screen than on editor. Reset button reseth the correction values to make it clear how the improvements effect the body. 
+
+56- In order to see how elbows could be updated followings have been implemented
+- Updating the elbow have been disabled. But elbow joints can still move because hand sensors have an effect on them
+- This however is only possible if hand rotation calculated at the last sequence. Otherwise the changes of the hand will be overwritten
+- which means elbow update should be implemented before the hand rotation from the suit has been calculated.
+- As explained above, wrist rotates elbow on x axis. on z axis there shouldnt be any movement. so we will rotate around y axis.
+
+57- Quaternions are so complex and calculating one depends on the other rotation on axis. So disrupting an quaternion is not viable. However the resulting euler angles is still changable. AS explained, we need to make corrections to the y axis.
+
+58- In IPose suits skeletons angle between shoulder to elbow and elbow to wrist is 175 degrees. If the arms are closed tightly this could drop to 40 degrees. This 135 degrees change should also be seen in the body.
+
+59- Tests have shown as that localeuler of elbow shouldnt drop below zero (or 360 - angle). It is also shown that the negative value could reach up to 30 degrees in some extreme cases.
+- In order to make the animation as humanoid as possible, we need to make sure elbpow degrees dont go below zero (Constraint 1)
+- In order to simulate te change of suit on the body, we need yet another function which basically forces this change on the elbow.localeuler.y. This is important because suit could mesaure this angle ver well (IMO).
+- So the local euler of elbow has been modfied to stay in huanoid range, which means localeuler.y has been set to 0.
+-This solves the problem of elbow bending in the wrong way. 
+- Coeefficients have benn added to all xyz values. It has shown that putting constraints on x and z values could also improve the animation.
+- its been seen that playing with x value doesnt bring much. but z value is important. When the arms are strecth (shoulder elbow wrist degree coles to 180) z value coefficient should be very small. On the contrary when this angle decreases it is best to increase this coefficient..
+
+60- So another function has been modeled. It is simple. y = c/x^2. The above mentioned degree 40 is an extreme case. We consider to user to bend the elbows to as much as 50 degrees. in order to get 50 degrees bending to a coefficient value of 1 we decided that c should be 2500
+
+61- Experimenting more has shown that x value could also be important to get perfect pose. This degree again depends on the angle we calculated above. but the coefficient should function a little different. It will be further tested
+
+62- Instead of interpolating the entire values between 0-1 i decided to interpolate the values until 100 degree. this is because we wantt to correct localeuler.z and x when the arm is stretched out. 
+
+63- Another prolem with the suit has been identified and it shows how fast the drif occurs.
+
+64- the z value is strongly dependent on v value- use this. z rotation doesnt make sense when arms are stretched - y rotation =0. left elbow y and z values are on positive side. but on right they are both negative so needs to handled seperatly.
+
+65- Latest experiments have showed that z values shouldntz also drop to negative value for left and positive for right thats also beenad ressed.
+
+66- while getting the rotation of elbows, right elbow and shpoulder etc. were giving negative values. but localeulerAngles were returning that degree as 360-a . so some adjustments have been made there also.
+
+67- 83 degrees have been changed to 0 and initalisation with T Pose has been tested. Unfortunately suit automatically cinsiders the inital pose to be I Pose and Calibrat funcctions calibrates the object according to IPose. Thats why calibrating with another pose doesnt make much sense.
+
+68 - Different angles have been tested to find the best degree, but in order to find this out imitalisation must be standardised. AFter that , this degree will be calculated based on subjects.
+
+69 - In order to standardize the IPose , a webcam has been added to the system. This was taking a picture of the subject at the T Pose than in Ipose. Based on the locations of shoulder and wrists joints the difference in the angle were being calculated. But the camera had to be fixated and calibrated. in order not to use optical methods , the ideas has been discarded.
+
+70- Another approach has been tested. Instead of APose where arms are light on the side, we have tested Ipose which considers the arms to be tightly closed next to the body.
+
+71- in this case any angle between 88 and 82 were ok. Best degree will be tested with the subjects.
+ 
+72- A script from the source https://gist.github.com/gunderson/d7f096bd07874f31671306318019d996 has been added to the camera
+
+73- Couple adjustments for mesh deformation have been implemented.
+
+74- In order to carry out the evaluation, couple of things have been added to the scene. These will help us with the experiment.
+
+Bugs and Nuisances i have encountered that costed time:
+
+-while creating _jointlocationUpdater script, i have initialized a dictionary with TsHumanBoneIndex, Transform. even though it hes baeen initialised once, and its values havent changed, and was readonly, the values i got from the dictionary was changing. probably because Transforms werent values rather references. I have changed it to Vector3 and solved the problem. 
+- While trying to correct elbow rotations, i have studied too much time on learning quaternions just to learn we can not simply change their values to our will.
+-ManagaExperiment MeasureElbowWristParalelity() was always returning 0 value for right arms. It was because the location.y is defined as 2e something. this was stopping us to calculate a value. I have changed it to mirror the left hand.
+-Mesh Cllider wasnt moving with character- turns out it is too costly. I added another empty gameobject and made it floow the parent. but i have scaled it too little and i forgot about it. mesh filters were too small and collision werent responding. took some time
+-Objects are colliding with subject. But subject doesnt quite collide wwith objects. Mesg deformation doesn occur when object touches the rigidbodies.

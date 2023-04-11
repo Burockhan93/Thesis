@@ -1,0 +1,97 @@
+- Subjekt signs the related papers and everything.
+- Subjekt wears the suit. We check if everything is functioning.
+- In the SampleScene there are tools to help us with the experiment. We click on start experiment.
+- At the same time questions will be asked to subject and the relevant form will be filled out.
+
+1- Surnuman, Name
+2- Age
+3- Height, Weight -> We create a body in the scene with these infos.(Related work has shown that good representation of body increase virtual awareness)
+
+- I start the scene, We make calibration. Now subject will move freely with the suit. Extreme movements are encouraged during this interval 
+
+4- Do you think the suit has represented your movements accurately?
+
+- Now we try to reproduce the drifting issue.Subjekt will monitor himself through the display Calibration. Subjekt applauds. We measure the distance between wrists.
+- Subject touchs both shoulders. Applauds again and we measure the distance again.
+- Now we ask the subject about the vi5saul difference
+
+5- Was there a visual difference between two applauses?
+
+-The same thing but instead of touching shoulders. Arms rotate- big drift problem. Again distances are measured.
+
+6- Again the subjekt will be asked about the visual difference.
+
+- Now we could start experimenting with different angles. First we use the avatarsetting with 83 degrees. 
+- Calibration, then TPose. In this Pose we calculate followings:
+	- From left wrist to left shoulder a line, from left elbow to left shoulder another
+	- From right wrist to right shoulder another line, from right elbow to right shoulde  another
+	- In an ideal case the angles between these lines should be small. And they all should be parallel to to ground.
+- Another thing we are measuring hee is the angles to the ground. There is another method for that and it ist included in code.MeasureArmsParalelity().
+-Then subjekt will be asked to applaud again.
+- Then without calculating anythin we go through every angle and asks the subject at the end which angle was visaully better. Then we go on to calculate that and compare it with 83
+
+7- Subjekt will be asked if there was any difference visually. And which applaud was better in his opinion.
+
+- Based on what he says we move with that degree further.
+- Now the moving shoulders. Calibration. Subjekt will be asked to raise his arms as much as possible. Correction will be implemented and turned off. 
+- Subjekt will be asked which position looked better and realistic.
+- Then he proceeds to touch his head with both arms in turn.
+- here again we measure the distance between wristand head. once with correction once without it.
+
+8- Subject will be asked about the visual differences he observed. Whoch was more realistic & better ?
+
+- Now we could finally do the arms rotating.
+- Calibration. TPose. Then rotate arms. We measure the travel distance of elbows in this pose. Then the line between wrists and elbow while the arms is rotated. This should be paralel to the ground again.
+- then applaud and distance will be measured.
+- Then Calibration. Turn on Correction. Again the same things.
+- Applaud is important because we have adjusted the rotations. it might yield a worse result.
+
+9- We have made an additional adjustment while rotating the arms. Which was visually more appealing in your opinion? First or second? Was there any visual difference in the applaus position this time ?
+
+- finally we clode every correction. Calibration (IPose) - TPose -Arms rotate - Head touch- Applaud.
+- open every correction the same.
+-Ask if its better and how would he score this improvement?
+
+10- We have made some certain body poses twice. Which would you consider to be more representative of your movements?
+
+- Now the skleton part is over.
+- Finally we let a scene play where two smplx bodies interacts with environment. In one of them we activate mesh deformation in the other not.
+- Subject could interact with both bodies in the scene by throwing objects at him. 
+- At the end of scripted play we ask the subject which scene was better & realistic and why ?
+
+11-In this scene the both avatars interact with the environment. Which one of them looks like it actually interacts with the objects? What can you say about the visual  response of the bodies of both avatars?
+
+With this final question we end the experiment.
+
+-----------------------------------
+
+Vor jeder Bewegung wird der Suit kalibriert, damit wir so wenig rauschen wie möglich haben.
+
+1- Vorname, Name -> üblic
+2- Alter-> üblich
+
+3- Körpergröße und gewicht -> damit wir eine bessere Avatar in der Szene erstellen können
+
+4- Ich werde den SUbjekt frage mit dem Suit frei zu bewegen und Ausdehnungen zu machen. danach frage ich ob die Suit alles gut gemacht hat . Hier implemntiere ich keine Korrektur
+
+5 - Hier wir das Driftproblem simuliert. der Subjekt wird erst einmal applausen. Hier wird die Abstand zwischen Händen und die Winkeln von Ellenbogen gemessen. Dann wird der Subjekt an seinen Schultern anfassen dann nochmal applausen. Wir messen hier den Abstand zwischen Händen und die Winkeln bei den Ellenbogen nochmal zum vergelich. Dann fragen wir den Subjekt ob er einen unterschied gesehen hat. 
+
+6- Das gleiche. Aber dieses Mal rotiert er seine Linke Hand sehr schnell um das große Drift zu erzeugen. Wir fragen nochmal ob er einen visuellen Unterschied beobachtet.
+
+7- Hier werden wir die Kalibrierung mit 83 degrees und 86 degrees in einer beliebigen Ordnung testen. Nach der Kalibrierung wird der Subjekt gefragt TPose anzunehmen. Hier werden wir die Parallelität der Armen messen. Eine Linie zwischen Ellenbogen und Wrist für je zwei Armen. Dann eine Linie von einer Wrist zu dem anderen. Diese drei Linie sollen zu der Oberfläche paralel sein. Zusätzlich frage ich den Subjekt, welche TPose und Applaud visuel besser war. 
+
+8- Danach machen wir mit 86 degrees weiter. Hier wird der Subjekt gefragt seine Armen zu hoch wie möglich zu ziehen. Ich werde die Korrektur bei den Schultern hier ein und auschalten. In diesem Position wird er gefragt welche besser ausgesehen hat. DIe Ordnung ist nochmal random. Dann wird er gefragt seine Hand an den Kopf zu stellen. Hier werden wir den Abstand zwischen Hönden und Kopf messen. Einmal mit Korrektur , einmal ohne Korrektur.
+
+9- Hier werden die Ellenbogen Rotationskorrektur getestet. Nochmal nimmmt der Subjekt TPose an.   Die ursprungliche Position von Ellenbogen Gelenkte wird notiert. Danach dreht der Subjekt seine Armen um ihre eigene Achsen ohne die Armen hin und her zu bewegen. Rotationkorrektur wird in einer Test eingeschaltet und in anderen ausgeschaltet. Wir messen wie weit sich die Ellenbogengelenke aus ihrer eigentlichen Lokation abschweifen. Die sollen so stabil wie möglich sein natürlich. Wir fragen den Subjekt nochmal welche besser ausgehen hat. Dann fragen wir ihn nochmal zu applausen. Da wir die Ellenbogen rotationen geändert haben, erwarte ich hier eine völlig andere Verhältnis als was Suit uns sonst geben würde. Das fragen wir ja auch den Subjekt.
+
+10- Dann lassen wir den Subjekt diese Bewegungen zwei Mal von sich selbst durchlaufen. 
+Kalibration auch IPose - TPose -Arme rotieren- Kopf berühren - Applaus.
+
+Diese zwei Sätze macht er in einer test mit allen Korrekturen eingeschaltet und in anderen ausgeschaltet. Dann fragen wir generel welche besser ausgesehen hat.
+
+Somit die Strukturel Teil zu Ende.
+
+11- Da die Suit kein MeshDeformation anbietet gibt es hier nicht zu viel zum vergelich. Aber ich habe eine Szene vorbereitet, in dem zwei Avatars mit deren Umgebung interagieren. Eine Avatar ist unsere SMPLX body mit Meshdeformation. Der andere hat keine Meshdeformation abder benutze ich trotzdem den Körper von SMPLX, damit Vergelich fair ist.
+ Hier wird der Subjekt nicht mehr bewegen sondern beobachten und schließlich sagen welche von den Avatars mit deren Umgebung realistischer interagiert hat.
+
+Natürlich bleibe ich offen zur Verbesserungsvorschlägen.

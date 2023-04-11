@@ -1,0 +1,16 @@
+				- best case 	- error	
+
+1- Applaud_WristDistance	0.05		+/- 0.1
+
+2- Left S-W-E(suitsiz)		4.06°		
+   Right S-W-E			5.05°
+
+3- Left Shoulderparalel		5.45°		+/-1
+   Right			2.16
+
+4- HeadtoWrist(Suitsiz)		0.03		+/-0.01
+
+5- Left ElbowtoWrist(S.siz)	4.03°		+/-1
+   Right			5.54°		+/-1
+secondmethod left		172°
+right 				169°		+/-2
